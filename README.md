@@ -13,8 +13,8 @@ File **play.py** is a script enabling playing game with simple visualization.
 
 ### Communication format
 #### Game position
-On each turn **GameMaster** will print id of active player followed by a game state looking like this:\
-    b wwww________bbbb wwww________bbbb wwww________bbbb wwww________bbbb \
+On each turn **GameMaster** will print id of active player followed by a game state looking like this:<br/><br/>
+    b wwww________bbbb wwww________bbbb wwww________bbbb wwww________bbbb <br/><br/>
 First character is 'b' if black is the active player and 'w' otherwise. Four next segments coressponds to:
 1. Black player's black board (bottom left)
 2. Black player's white board
@@ -45,5 +45,7 @@ Moves have following notation:
 After following moves:
 - 2ULb14f15
 - DLw3f1
-This position will be reached:
-b w_www_______bb_b wwww________bbbb wwww________bbbb www__bw_____bbb_
+  
+This position will be reached:<br/><br/>
+b w_www_______bb_b wwww________bbbb wwww________bbbb www__bw_____bbb_<br/><br/>
+![position](https://github.com/opprotossball/py-shobu/blob/main/examples/sample_position.png)
