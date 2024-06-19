@@ -70,10 +70,10 @@ def display_game(boards_str):
     clock = pygame.time.Clock()
     screen.fill(BACKGROUND_COLOR)
     # Draw four boards in a 2x2 layout with different colors
-    draw_board(boards[0], BOARD_MARGIN, BOARD_MARGIN, BLACK_BOARD)
-    draw_board(boards[1], (TILE_SIZE + MARGIN) * BOARD_SIZE + BOARD_MARGIN * 2, BOARD_MARGIN, WHITE_BOARD)
-    draw_board(boards[2], BOARD_MARGIN, (TILE_SIZE + MARGIN) * BOARD_SIZE + BOARD_MARGIN * 2, WHITE_BOARD)
-    draw_board(boards[3], (TILE_SIZE + MARGIN) * BOARD_SIZE + BOARD_MARGIN * 2, (TILE_SIZE + MARGIN) * BOARD_SIZE + BOARD_MARGIN * 2, BLACK_BOARD)
+    draw_board(boards[2], BOARD_MARGIN, BOARD_MARGIN, BLACK_BOARD)
+    draw_board(boards[3], (TILE_SIZE + MARGIN) * BOARD_SIZE + BOARD_MARGIN * 2, BOARD_MARGIN, WHITE_BOARD)
+    draw_board(boards[0], BOARD_MARGIN, (TILE_SIZE + MARGIN) * BOARD_SIZE + BOARD_MARGIN * 2, BLACK_BOARD)
+    draw_board(boards[1], (TILE_SIZE + MARGIN) * BOARD_SIZE + BOARD_MARGIN * 2, (TILE_SIZE + MARGIN) * BOARD_SIZE + BOARD_MARGIN * 2, WHITE_BOARD)
     pygame.display.flip()
     clock.tick(60)
 
