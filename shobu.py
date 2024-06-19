@@ -30,6 +30,9 @@ class Shobu:
     def occupied(s, tile_content):
         return tile_content == Shobu.WHITE_PIECE or tile_content == Shobu.BLACK_PIECE
 
+    def board_to_readable(s, board):
+        return [board[i] for i in s.board_iterator()]
+    
     def undo_move(s):
         s.white_to_go = not s.white_to_go
         s.winner = 0
