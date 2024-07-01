@@ -1,3 +1,56 @@
+class Move:
+
+    # tile must be in game internal coordinates
+    def __init__(s, white_passive_board: bool, home_aggressive_board: bool, passive_from: int, aggressive_from: int, is_double_move: bool, direction: int):
+        s.white_passive_board = white_passive_board
+        s.home_aggressive_board = home_aggressive_board
+        s.passive_from = passive_from
+        s.aggressive_from = aggressive_from
+        s.is_double_move = is_double_move
+        s.direction = direction
+
+    @staticmethod
+    def from_string(move):
+        is_double_move = move[0] == '2'
+        index = 1 if is_double_move else 0
+        direction_chars = ""
+        while index < len(move) and move[index].isupper():
+            direction_chars += move[index]
+            index += 1
+        direction = Shobu.DIRECTIONS[direction_chars]
+        white_passive_board = move[index] == 'w'
+        index += 1
+        passive_from_start = index
+        while index < len(move) and move[index].isdigit():
+            index += 1
+        passive_from = Shobu.readable_2_internal(int(move[passive_from_start:index]))
+        home_aggressive_board = move[index] == 'h'
+        index += 1
+        aggressive_from_start = index
+        while index < len(move) and move[index].isdigit():
+            index += 1
+        aggressive_from = Shobu.readable_2_internal(int(move[aggressive_from_start:index]))
+        return Move(
+            white_passive_board=white_passive_board,
+            home_aggressive_board=home_aggressive_board,
+            passive_from=passive_from,
+            aggressive_from=aggressive_from,
+            is_double_move=is_double_move,
+            direction=direction
+        )
+    
+    def to_string(s):
+        notation = '2' if s.is_double_move else ''
+        dir_string = list(Shobu.DIRECTIONS.keys())[list(Shobu.DIRECTIONS.values()).index(s.direction)]
+        for char in dir_string:
+            if char.isupper():
+                notation += char
+        notation += 'w' if s.white_passive_board else 'b'
+        notation += str(Shobu.internal_2_readable(s.passive_from))
+        notation += 'h' if s.home_aggressive_board else 'f'
+        notation += str(Shobu.internal_2_readable(s.aggressive_from))
+        return notation
+    
 class Shobu:
 
     EMPTY_TILE = 0
@@ -32,7 +85,12 @@ class Shobu:
 
     def board_to_readable(s, board):
         return [board[i] for i in s.board_iterator()]
-    
+
+    def all_boards(s):
+        for l in s.boards:
+            for board in l:
+                yield board
+
     def undo_move(s):
         s.white_to_go = not s.white_to_go
         s.winner = 0
@@ -84,6 +142,24 @@ class Shobu:
                 if board[to] != Shobu.EMPTY_TILE and s.occupied(board[to + direction]):
                     return False
         return True
+    
+    def is_push_over(s, move):
+        aggressive_board = s.get_board(s.white_to_go == move.home_aggressive_board, not move.white_passive_board)
+        diff = 2 * move.direction if move.is_double_move else move.direction
+        pushed_to =  move.aggressive_from + diff + move.direction
+        pushed = aggressive_board[move.aggressive_from + diff] != Shobu.EMPTY_TILE or aggressive_board[move.aggressive_from + move.direction] != Shobu.EMPTY_TILE
+        return pushed and aggressive_board[pushed_to] == Shobu.OUT_OF_BOARD
+    
+    def push_from_to(s, move):
+        aggressive_board = s.get_board(s.white_to_go == move.home_aggressive_board, not move.white_passive_board)
+        diff = 2 * move.direction if move.is_double_move else move.direction
+        pushed_to = move.aggressive_from + diff + move.direction
+        ret = -1 if aggressive_board[pushed_to] == Shobu.OUT_OF_BOARD else pushed_to
+        if aggressive_board[move.aggressive_from + diff] != Shobu.EMPTY_TILE:
+            return move.aggressive_from + diff, ret
+        if move.is_double_move and aggressive_board[move.aggressive_from + move.direction] != Shobu.EMPTY_TILE:
+            return move.aggressive_from + move.direction, ret
+        return -1, -1 
 
     def __check_winner(s, board):
         if board.count(Shobu.WHITE_PIECE) == 0:
@@ -150,7 +226,7 @@ class Shobu:
     def __new_board(s):
         board = []
         for i in range(64):
-            if not s.__valid_tile(i):
+            if not s.valid_tile(i):
                 board.append(Shobu.OUT_OF_BOARD)
             elif i // 8 == 2:
                 board.append(Shobu.WHITE_PIECE)
@@ -168,7 +244,7 @@ class Shobu:
     def get_board(s, white_home, white_board):
         return s.boards[int(white_home)][int(white_board)]
 
-    def __valid_tile(s, tile):
+    def valid_tile(s, tile):
         return tile > 15 and tile < 47 and tile % 8 > 1 and tile % 8 < 6
     
     def to_string(s):
@@ -212,6 +288,13 @@ class Shobu:
                         moves.append(move)
         return moves
 
+    def move_generator(s):
+        for white_board in [True, False]:
+            for aggressive_home in [True, False]:
+                for double_moves in [True, False]:
+                    for move in s.__moves_for_boards(white_board, aggressive_home, double_moves):
+                        yield move
+    
     @staticmethod
     def readable_2_internal(tile):
         return 18 + (tile % 4) + 8 * (tile // 4)
@@ -220,99 +303,3 @@ class Shobu:
     def internal_2_readable(tile):
         return tile - 4 * ((tile - 18) // 8) - 18 
     
-class Move:
-
-    # tile must be in game internal coordinates
-    def __init__(s, white_passive_board: bool, home_aggressive_board: bool, passive_from: int, aggressive_from: int, is_double_move: bool, direction: int):
-        s.white_passive_board = white_passive_board
-        s.home_aggressive_board = home_aggressive_board
-        s.passive_from = passive_from
-        s.aggressive_from = aggressive_from
-        s.is_double_move = is_double_move
-        s.direction = direction
-
-    @staticmethod
-    def from_string(move):
-        is_double_move = move[0] == '2'
-        index = 1 if is_double_move else 0
-        direction_chars = ""
-        while index < len(move) and move[index].isupper():
-            direction_chars += move[index]
-            index += 1
-        direction = Shobu.DIRECTIONS[direction_chars]
-        white_passive_board = move[index] == 'w'
-        index += 1
-        passive_from_start = index
-        while index < len(move) and move[index].isdigit():
-            index += 1
-        passive_from = Shobu.readable_2_internal(int(move[passive_from_start:index]))
-        home_aggressive_board = move[index] == 'h'
-        index += 1
-        aggressive_from_start = index
-        while index < len(move) and move[index].isdigit():
-            index += 1
-        aggressive_from = Shobu.readable_2_internal(int(move[aggressive_from_start:index]))
-        return Move(
-            white_passive_board=white_passive_board,
-            home_aggressive_board=home_aggressive_board,
-            passive_from=passive_from,
-            aggressive_from=aggressive_from,
-            is_double_move=is_double_move,
-            direction=direction
-        )
-    
-    def to_string(s):
-        notation = '2' if s.is_double_move else ''
-        dir_string = list(Shobu.DIRECTIONS.keys())[list(Shobu.DIRECTIONS.values()).index(s.direction)]
-        for char in dir_string:
-            if char.isupper():
-                notation += char
-        notation += 'w' if s.white_passive_board else 'b'
-        notation += str(Shobu.internal_2_readable(s.passive_from))
-        notation += 'h' if s.home_aggressive_board else 'f'
-        notation += str(Shobu.internal_2_readable(s.aggressive_from))
-        return notation
-
-class GameMaster:
-    
-    def __init__(s, max_moves, logging=False, visualization=None):
-        s.max_moves = max_moves
-        s.logging = logging
-        s.visualization = visualization
-
-    def play_game(s):
-        game = Shobu()
-        moves_played = 0
-        while game.winner == 0:
-            if s.visualization is not None:
-                s.visualization(game.to_string())
-            player_to_go = 1 if game.white_to_go else 0
-            print(player_to_go)
-            position = game.to_string()
-            print(position)
-            bot_move = input()
-            try:
-                move = Move.from_string(bot_move)
-                game.make_move(move)
-            except Exception as e:
-                if s.logging:
-                    print(e)
-                if player_to_go == 0:
-                    print(1)
-                else:
-                    print(0)
-                return
-            moves_played += 1
-            # if too many moves were made player that made last move loses  
-            if moves_played == s.max_moves:
-                winner = 1 if game.white_to_go else 0
-                if s.logging:
-                    print('Maximal number of moves reached')
-                print(winner)
-                return
-        winner = 0 if game.winner == -1 else 1
-        print(winner)
-
-if __name__ == '__main__':
-    gm = GameMaster(max_moves=50, logging=True)
-    gm.play_game()

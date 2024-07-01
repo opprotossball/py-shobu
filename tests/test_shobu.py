@@ -1,4 +1,4 @@
-from shobu import *
+from game.shobu import *
 import random 
 import unittest
 
@@ -49,6 +49,32 @@ class ShobuTest(unittest.TestCase):
                 self.random_play_out(seed)
             except Exception as e:
                 self.fail(f'failed: {e}')
+
+    def test_play_moves(self):
+        premoves = 12
+        seeds = [2137, 789, 8, 45, 123]
+        for seed in seeds:
+            game = Shobu()
+            random.seed(seed)
+            for _ in range(premoves):
+                game.make_move(random.choice(game.get_legal_moves()))
+            moves = game.get_legal_moves()
+            for move in moves:
+                try:
+                    game.make_move(move)
+                    game.undo_move()
+                except Exception as e:
+                    self.fail(f'failed: {e}')
+
+    def test_move_generation(self):
+        positions = ['b wwww__________bb wwww___________b wwww___________b wwww___________b']
+        n_moves = [36]
+        for i, position in enumerate(positions):
+            game = Shobu.from_string(position)
+            moves = game.get_legal_moves()
+            self.assertEqual(len(moves), n_moves[i])
+            print('ok')
+
 
 if __name__ == '__main__':
     unittest.main()
