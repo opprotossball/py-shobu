@@ -2,8 +2,8 @@ import pygame
 import sys
 import threading
 import time
-import math
 from game.shobu import Shobu, Move
+import os
 
 class VisualPlayer:
     BOARD_SIZE = 4
@@ -25,10 +25,11 @@ class VisualPlayer:
         self.selected_aggressive = (None, None)
         self.direction = None
         self.move = None
+        self.move_chosen_event = threading.Event()
         self.boards_str = "b ________________ ________________ ________________ ________________"
 
     def start(self):
-        thread = threading.Thread(target=self.__start)
+        thread = threading.Thread(target=self.__start, daemon=True)
         thread.start()
         # give it time to init lol
         time.sleep(0.5)
@@ -57,9 +58,8 @@ class VisualPlayer:
             pygame.display.flip()
             clock.tick(60)
         pygame.quit()
-        sys.exit()
+        os._exit(0)
 
-        
     def piece_on_tile(self, board_str, board_id, tile):
         id = 2 + 17 * board_id + tile
         match board_str[id]:
@@ -90,6 +90,7 @@ class VisualPlayer:
         try:
             game.make_move(move)
             print(move.to_string())
+            self.move_chosen_event.set()
             self.move = move
         except:
             self.reset_selection()
@@ -296,8 +297,9 @@ class VisualPlayer:
         s.reset_selection()
         s.display_game(position_string)
         s.move = None
-        while s.move == None:
-            pass
+        s.move_chosen_event.clear()
+        s.move_chosen_event.wait()
+        s.move_chosen_event.clear()
         s.reset_selection()
         return s.move
 

@@ -1,8 +1,8 @@
 import pygame
-import sys
 from game.shobu import *
 import threading
 import time
+import os
 
 class Visualization:
     BOARD_SIZE = 4
@@ -17,7 +17,7 @@ class Visualization:
     BACKGROUND_COLOR = (40, 40, 40)  # Background color for the game
     
     def start(self):
-        thread = threading.Thread(target=self.__start)
+        thread = threading.Thread(target=self.__start, daemon=True)
         thread.start()
         # give it time to init lol
         time.sleep(0.5)
@@ -39,7 +39,7 @@ class Visualization:
             pygame.display.flip()
             clock.tick(60)
         pygame.quit()
-        sys.exit()
+        os._exit(0)
 
     def draw_board(self, board_str, x_offset, y_offset, board_color):
         for i in range(self.BOARD_SIZE):

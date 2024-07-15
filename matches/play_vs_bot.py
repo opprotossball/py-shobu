@@ -19,7 +19,7 @@ def play_vs_bot(playing_as_white, visual_player, bot_path, position=None, max_mo
     bot_process = subprocess.Popen(bot_path, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     time.sleep(2)
     bot_log = queue.Queue()
-    black_thread = threading.Thread(target=read_stderr, args=(bot_process, bot_log))
+    black_thread = threading.Thread(target=read_stderr, args=(bot_process, bot_log), daemon=True)
     black_thread.start()
 
     game = Shobu() if position is None else Shobu.from_string(position)

@@ -42,13 +42,13 @@ def play_match(black_bot_path, white_bot_path, position=None, max_moves=50, max_
     times = [[], []]
     black_cmd = ['python', black_bot_path] if black_bot_path.endswith('.py') else [black_bot_path]
     white_cmd = ['python', white_bot_path] if white_bot_path.endswith('.py') else [white_bot_path]
-    black_process = subprocess.Popen(black_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    white_process = subprocess.Popen(white_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    black_process = subprocess.Popen(black_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, daemon=True)
+    white_process = subprocess.Popen(white_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, daemon=True)
     time.sleep(2)
     black_log_queue = queue.Queue()
     white_log_queue = queue.Queue()
-    black_thread = threading.Thread(target=read_stderr, args=(black_process, black_log_queue))
-    white_thread = threading.Thread(target=read_stderr, args=(white_process, white_log_queue))
+    black_thread = threading.Thread(target=read_stderr, args=(black_process, black_log_queue), daemon=True)
+    white_thread = threading.Thread(target=read_stderr, args=(white_process, white_log_queue), daemon=True)
     black_thread.start()
     white_thread.start()
 
