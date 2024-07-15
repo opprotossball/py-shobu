@@ -6,16 +6,16 @@ import time
 
 class Visualization:
     BOARD_SIZE = 4
-    TILE_SIZE = 50
-    MARGIN = 5
-    BOARD_MARGIN = 20
+    TILE_SIZE = int(100 * 0.75)  
+    MARGIN = int(10 * 0.75)      
+    BOARD_MARGIN = int(40 * 0.75)  
     WHITE = (248, 248, 248)
     BLACK = (84, 81, 80)
     STONE_BORDER = (0, 0, 0)  # Border color for stones
     BLACK_BOARD = (181, 136, 99)
     WHITE_BOARD = (240, 217, 181)
     BACKGROUND_COLOR = (40, 40, 40)  # Background color for the game
-
+    
     def start(self):
         thread = threading.Thread(target=self.__start)
         thread.start()

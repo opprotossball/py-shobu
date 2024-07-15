@@ -1,6 +1,6 @@
 class Move:
 
-    # tile must be in game internal coordinates
+    # tiles must be in game internal coordinates
     def __init__(s, white_passive_board: bool, home_aggressive_board: bool, passive_from: int, aggressive_from: int, is_double_move: bool, direction: int):
         s.white_passive_board = white_passive_board
         s.home_aggressive_board = home_aggressive_board
@@ -111,6 +111,9 @@ class Shobu:
                 aggressive_board[pushed_to] = Shobu.EMPTY_TILE
 
     def can_be_played(s, board, origin, direction, is_double, is_aggressive):
+        active = Shobu.BLACK_PIECE if not s.white_to_go else Shobu.WHITE_PIECE
+        if board[origin] != active:
+            return False
         to = origin + (2 * direction) if is_double else origin + direction
         # goes out of board
         if board[to] == Shobu.OUT_OF_BOARD: 
@@ -226,7 +229,7 @@ class Shobu:
     def __new_board(s):
         board = []
         for i in range(64):
-            if not s.valid_tile(i):
+            if not Shobu.valid_tile(i):
                 board.append(Shobu.OUT_OF_BOARD)
             elif i // 8 == 2:
                 board.append(Shobu.WHITE_PIECE)
@@ -243,9 +246,6 @@ class Shobu:
 
     def get_board(s, white_home, white_board):
         return s.boards[int(white_home)][int(white_board)]
-
-    def valid_tile(s, tile):
-        return tile > 15 and tile < 47 and tile % 8 > 1 and tile % 8 < 6
     
     def to_string(s):
         res = 'w' if s.white_to_go else 'b'
@@ -295,6 +295,10 @@ class Shobu:
                     for move in s.__moves_for_boards(white_board, aggressive_home, double_moves):
                         yield move
     
+    @staticmethod
+    def valid_tile(tile):
+        return tile > 15 and tile < 47 and tile % 8 > 1 and tile % 8 < 6
+
     @staticmethod
     def readable_2_internal(tile):
         return 18 + (tile % 4) + 8 * (tile // 4)

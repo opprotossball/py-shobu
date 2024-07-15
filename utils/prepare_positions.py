@@ -2,6 +2,16 @@ import argparse
 import random
 from game.shobu import Shobu, Move
 
+def piece_on_tile(board_str, board_id, tile):
+    id = 2 + 17 * board_id + tile
+    match board_str[id]:
+        case '_':
+            return Shobu.EMPTY_TILE
+        case 'b':
+            return Shobu.BLACK_PIECE
+        case 'w':
+            return Shobu.WHITE_PIECE
+        
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('position_count', type=int)

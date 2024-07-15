@@ -5,16 +5,18 @@ from bots.ref_bot import RefBot
 from bots.random_bot import RandomBot
 from matches.visualization import Visualization
 from game.shobu import Shobu, Move
+from bots.visual_player import VisualPlayer
 from matches.tournament import tournament
+from matches.play_vs_bot import play_vs_bot
 
 def play_match():
-    human = RandomBot()
+    human = HumanPlayer()
     ref_bot = RefBot()
     bot = ShobuBot()
     visualization = Visualization()
     visualization.start()
     arena = Arena(50, visualization=visualization.display_game)
-    arena.play_game(human, bot)
+    arena.play_game(human, bot, position="b w_b_____________ wb______________ wb______________ w______________b")
 
 def test_on_positions():
     path = 'resources/classic_game.txt'
@@ -40,12 +42,21 @@ def duplicate_positions():
         positions.add(line)
 
 def play_tournamnet():
-    bot_1_path = 'tmp/rust-shobu.exe'
-    bot_2_path = 'tmp/bot.exe'
-    positions_path = 'resources/32_positions.txt'
+    #bot_2_path = 'tmp/shoman.exe'
+    bot_1_path = 'tmp/v7.exe'
+    bot_2_path = 'tmp/v7.exe'
+    positions_path = 'resources/classic_game.txt'
+    #positions_path = 'resources/32_positions.txt'
     visualization = Visualization()
     visualization.start()
-    tournament(bot_1_path, bot_2_path, positions_path, max_moves=50, visualization=visualization.display_game)
+    tournament(bot_1_path, bot_2_path, positions_path, max_moves=50, visualization=visualization.display_game, pause=False)
+
+def play_bot(playing_as_white):
+    bot = 'tmp/v8.exe'
+    player = VisualPlayer()
+    player.start()
+    play_vs_bot(playing_as_white, player, bot)
 
 if __name__ == '__main__':
-    play_tournamnet()
+    #play_tournamnet()
+    play_bot(False)

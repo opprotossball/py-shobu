@@ -85,3 +85,73 @@ bot_1 generator:
     avg time:
         bot_1: 1.524655
         bot_2: 1.139748
+
+RUST
+
+bot_2 tt:
+    wins:
+        bot_1: 38
+        bot_2: 26
+    draws: 0
+    avg time:
+        bot_1: 0.09815
+        bot_2: 0.027091
+
+bot_2 debugged fast hashing:
+    wins:
+        bot_1: 30
+        bot_2: 33
+    draws: 1
+    avg time:
+    bot_1: 0.110857
+    bot_2: 0.016177
+
+v3-4: material bonus
+
+v4-1: updated psts
+
+bot_2: v4-2: less materialistic
+    wins:
+        bot_1: 38
+        bot_2: 89
+    draws: 1
+    avg time:
+    bot_1: 2.280489
+    bot_2: 13.813292
+
+v5-0: tt move ordering vs v4-2:
+    wins:
+        bot_1: 1
+        bot_2: 1
+    draws: 0
+    avg time:
+        bot_1: 2.360596
+        bot_2: 21.505355
+
+deep final bot_1 vs v5-0: tt ordering
+    Game ended! Winner is: 0
+    wins:
+        bot_1: 38
+        bot_2: 26
+    draws: 0
+    avg time:
+    bot_1: 2.432484
+    bot_2: 2.36449
+
+deep final vs iterative:
+    wins:
+        bot_1: 22
+        bot_2: 41
+    draws: 1
+    avg time:
+    bot_1: 1.927749
+    bot_2: 1.940375
+
+bot_1: iterative, bot_2: iterative old eval
+    wins:
+        bot_1: 40
+        bot_2: 24
+    draws: 0
+    avg time:
+    bot_1: 1.94129
+    bot_2: 1.942802
