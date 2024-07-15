@@ -2,9 +2,10 @@
 
 ### Game rules
 [https://rules.dized.com/game/VJQ5V5aAR4aqK31q1V1OXA/QxFjI3hVRLSgodBga_Ajtg/playing-the-game](https://rules.dized.com/game/VJQ5V5aAR4aqK31q1V1OXA/QxFjI3hVRLSgodBga_Ajtg/playing-the-game)
-
+### Tournament
+To run tournament based on stdin/stdout communication use **main.py** with paths to bots executables and file with lits of positions. Python bot can be converted to executable using:<br/><br/>
+pyinstaller --onefile --distpath .\tmp .\bots\bot.py <br/><br/>
 ### Classes
-**shobu.py** file contains 3 classes:
 - **Shobu** - class representing game with usefull methods like **make_move**, **undo_move**, **get_legal_moves** or **clone**. Game position can be obtained by **to_string** method.
 - **Move** - class representing moves. List of Moves is returned by **get_legal_moves**. **Sobus**'s **make_move** also take **Move** as parameter. Can be instantiated from string and represented as one.
 - **GameMaster** - class that allows bots to play game using stdin stodut communication by using **play_game** method.
